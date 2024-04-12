@@ -33,3 +33,19 @@ target_link_libraries(solanaceae_file2_zstd PUBLIC
 	zstd::zstd
 )
 
+########################################
+
+add_library(solanaceae_object_store_backend_filesystem
+	./solanaceae/object_store/backends/file2_stack.hpp
+	./solanaceae/object_store/backends/file2_stack.cpp
+	./solanaceae/object_store/backends/filesystem_storage.hpp
+	./solanaceae/object_store/backends/filesystem_storage.cpp
+)
+
+target_include_directories(solanaceae_object_store_backend_filesystem PUBLIC .)
+target_compile_features(solanaceae_object_store_backend_filesystem PUBLIC cxx_std_17)
+target_link_libraries(solanaceae_object_store_backend_filesystem PUBLIC
+	solanaceae_object_store
+	solanaceae_file2_zstd
+)
+

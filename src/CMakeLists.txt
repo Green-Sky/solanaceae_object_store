@@ -19,3 +19,17 @@ target_link_libraries(solanaceae_object_store PUBLIC
 	solanaceae_util
 )
 
+########################################
+
+add_library(solanaceae_file2_zstd
+	./solanaceae/file/file2_zstd.hpp
+	./solanaceae/file/file2_zstd.cpp
+)
+
+target_include_directories(solanaceae_file2_zstd PUBLIC .)
+target_compile_features(solanaceae_file2_zstd PUBLIC cxx_std_17)
+target_link_libraries(solanaceae_file2_zstd PUBLIC
+	solanaceae_file2
+	zstd::zstd
+)
+

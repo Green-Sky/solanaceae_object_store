@@ -11,6 +11,7 @@ endif()
 message("II SOLANACEAE_OBJECT_STORE_STANDALONE " ${SOLANACEAE_OBJECT_STORE_STANDALONE})
 
 #option(SOLANACEAE_OBJECT_STORE_BUILD_PLUGINS "Build the solanaceae_object_store plugins" ${SOLANACEAE_OBJECT_STORE_STANDALONE})
+option(SOLANACEAE_OBJECT_STORE_BUILD_TESTING "Build the solanaceae_object_store tests" ${SOLANACEAE_OBJECT_STORE_STANDALONE})
 
 if (SOLANACEAE_OBJECT_STORE_STANDALONE)
 	set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -65,6 +66,11 @@ endif()
 # cmake setup end
 
 add_subdirectory(./src)
+
+if (SOLANACEAE_OBJECT_STORE_BUILD_TESTING)
+	include(CTest)
+	add_subdirectory(./test)
+endif()
 
 #if (SOLANACEAE_OBJECT_STORE_BUILD_PLUGINS)
 	#add_subdirectory(./plugins)

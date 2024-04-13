@@ -75,8 +75,9 @@ ObjectHandle FilesystemStorage::newObject(ByteSpan id) {
 		object_file_path = std::filesystem::path{_storage_path}/id_hex;
 	} else {
 		// use the first 2hex (1byte) as a subfolder
-		std::filesystem::create_directories(std::string{_storage_path} + id_hex.substr(0, 2));
-		object_file_path = std::filesystem::path{std::string{_storage_path} + id_hex.substr(0, 2)} / id_hex.substr(2);
+		const auto object_dir = std::filesystem::path{std::string{_storage_path}} / id_hex.substr(0, 2);
+		std::filesystem::create_directories(object_dir);
+		object_file_path = object_dir / id_hex.substr(2);
 	}
 
 	if (std::filesystem::exists(object_file_path)) {
@@ -275,10 +276,18 @@ bool FilesystemStorage::write(Object o, std::function<write_to_storage_fetch_dat
 		}
 		if (buffer_actual_size > buffer.size()) {
 			// wtf
+			assert(false);
 			break;
 		}
 
-		data_file_stack.top()->write({buffer.data(), buffer_actual_size});
+		if (!data_file_stack.top()->write({buffer.data(), buffer_actual_size})) {
+			while (!meta_file_stack.empty()) { meta_file_stack.pop(); } // destroy stack // TODO: maybe work with scope?
+			std::filesystem::remove(meta_tmp_path);
+			while (!data_file_stack.empty()) { data_file_stack.pop(); } // destroy stack // TODO: maybe work with scope?
+			std::filesystem::remove(data_tmp_path);
+			std::cerr << "FS error: failed to write data\n";
+			return false;
+		}
 	} while (buffer_actual_size == buffer.size());
 
 	// flush // TODO: use scope

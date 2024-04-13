@@ -11,8 +11,6 @@ File2ZSTDW::File2ZSTDW(File2I& real) :
 	File2I(true, false),
 	_real_file(real)
 {
-	ZSTD_CCtx_setParameter(_cctx.get(), ZSTD_c_compressionLevel, 0); // default (3)
-	ZSTD_CCtx_setParameter(_cctx.get(), ZSTD_c_checksumFlag, 1); // add extra checksums (to frames?)
 }
 
 File2ZSTDW::~File2ZSTDW(void) {
@@ -37,29 +35,15 @@ bool File2ZSTDW::write(const ByteSpan data, int64_t pos) {
 		std::cout << "F2ZSTD warning: each write is a zstd frame and compression suffers significantly for small frames.\n";
 	}
 
-	std::vector<uint8_t> compressed_buffer(ZSTD_CStreamOutSize());
+	std::vector<uint8_t> compressed_buffer(ZSTD_compressBound(data.size));
+	const auto ret = ZSTD_compress(compressed_buffer.data(), compressed_buffer.size(), data.ptr, data.size, 0);
 
-	ZSTD_inBuffer input = { data.ptr, data.size, 0 };
+	if (ZSTD_isError(ret)) {
+		std::cerr << "F2WRZSTD error: compressing data failed\n";
+		return false;
+	}
 
-	size_t remaining_ret {0};
-	do {
-		// remaining data in input < compressed_buffer size (heuristic)
-		bool const lastChunk = (input.size - input.pos) <= compressed_buffer.size();
-
-		ZSTD_EndDirective const mode = lastChunk ? ZSTD_e_end : ZSTD_e_continue;
-
-		ZSTD_outBuffer output = { compressed_buffer.data(), compressed_buffer.size(), 0 };
-
-		remaining_ret = ZSTD_compressStream2(_cctx.get(), &output , &input, mode);
-		if (ZSTD_isError(remaining_ret)) {
-			std::cerr << "F2WRZSTD error: compressing data failed\n";
-			break;
-		}
-
-		_real_file.write(ByteSpan{compressed_buffer.data(), output.pos});
-	} while ((input.pos < input.size || remaining_ret != 0) && _real_file.isGood());
-
-	return _real_file.isGood();
+	return _real_file.write(ByteSpan{compressed_buffer.data(), ret}) && _real_file.isGood();
 }
 
 std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDW::read(uint64_t, int64_t) {

@@ -11,9 +11,6 @@
 struct File2ZSTDW : public File2I {
 	File2I& _real_file;
 
-	// TODO: hide this detail?
-	std::unique_ptr<ZSTD_CCtx, decltype(&ZSTD_freeCCtx)> _cctx{ZSTD_createCCtx(), &ZSTD_freeCCtx};
-
 	File2ZSTDW(File2I& real);
 	virtual ~File2ZSTDW(void);
 

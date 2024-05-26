@@ -73,65 +73,56 @@ int main(void) {
 			// reads return owning buffers
 
 			{ // readback data_test_text1
-				auto r_res_var = f_r_zstd.read(data_test_text1.size);
+				auto r_res = f_r_zstd.read(data_test_text1.size);
 
 				//assert(f_r_zstd.isGood());
 				//assert(f_r_file.isGood());
-				assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-				const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+				assert(r_res.isOwning());
 
 				//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-				assert(r_res_vec.size() == data_test_text1.size);
-				assert(std::equal(data_test_text1.cbegin(), data_test_text1.cend(), r_res_vec.cbegin()));
+				assert(r_res.size == data_test_text1.size);
+				assert(std::equal(data_test_text1.cbegin(), data_test_text1.cend(), r_res.cbegin()));
 			}
 
 			{ // readback data_test_text2
-				auto r_res_var = f_r_zstd.read(data_test_text2.size);
+				auto r_res = f_r_zstd.read(data_test_text2.size);
 
 				//assert(f_r_zstd.isGood());
 				//assert(f_r_file.isGood());
-				assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-				const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+				assert(r_res.isOwning());
 
 				//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-				assert(r_res_vec.size() == data_test_text2.size);
+				assert(r_res.size == data_test_text2.size);
 				assert(std::equal(
 					data_test_text2.cbegin(),
 					data_test_text2.cend(),
-					r_res_vec.cbegin()
+					r_res.cbegin()
 				));
 			}
 
 			{ // readback data_test_text3
-				auto r_res_var = f_r_zstd.read(data_test_text3.size);
+				auto r_res = f_r_zstd.read(data_test_text3.size);
 
 				//assert(f_r_zstd.isGood());
 				//assert(f_r_file.isGood());
-				assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-				const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+				assert(r_res.isOwning());
 
 				//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-				assert(r_res_vec.size() == data_test_text3.size);
+				assert(r_res.size == data_test_text3.size);
 				assert(std::equal(
 					data_test_text3.cbegin(),
 					data_test_text3.cend(),
-					r_res_vec.cbegin()
+					r_res.cbegin()
 				));
 			}
 
 			{ // assert eof somehow
 				// since its eof, reading a single byte should return a zero sized buffer
-				auto r_res_var = f_r_zstd.read(1);
-				if (std::holds_alternative<std::vector<uint8_t>>(r_res_var)) {
-					assert(std::get<std::vector<uint8_t>>(r_res_var).empty());
-				} else if (std::holds_alternative<ByteSpan>(r_res_var)) {
-					assert(std::get<ByteSpan>(r_res_var).empty());
-				} else {
-					assert(false);
-				}
+				auto r_res = f_r_zstd.read(1);
+				assert(r_res.empty());
 			}
 		}
 	}
@@ -184,65 +175,56 @@ int main(void) {
 		// reads return owning buffers
 
 		{ // readback data_test_text1
-			auto r_res_var = f_r_zstd.read(data_test_text1.size);
+			auto r_res = f_r_zstd.read(data_test_text1.size);
 
 			//assert(f_r_zstd.isGood());
 			//assert(f_r_file.isGood());
-			assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-			const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+			assert(r_res.isOwning());
 
 			//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-			assert(r_res_vec.size() == data_test_text1.size);
-			assert(std::equal(data_test_text1.cbegin(), data_test_text1.cend(), r_res_vec.cbegin()));
+			assert(r_res.size == data_test_text1.size);
+			assert(std::equal(data_test_text1.cbegin(), data_test_text1.cend(), r_res.cbegin()));
 		}
 
 		{ // readback data_test_text2
-			auto r_res_var = f_r_zstd.read(data_test_text2.size);
+			auto r_res = f_r_zstd.read(data_test_text2.size);
 
 			//assert(f_r_zstd.isGood());
 			//assert(f_r_file.isGood());
-			assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-			const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+			assert(r_res.isOwning());
 
 			//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-			assert(r_res_vec.size() == data_test_text2.size);
+			assert(r_res.size == data_test_text2.size);
 			assert(std::equal(
 				data_test_text2.cbegin(),
 				data_test_text2.cend(),
-				r_res_vec.cbegin()
+				r_res.cbegin()
 			));
 		}
 
 		{ // readback data_test_text3
-			auto r_res_var = f_r_zstd.read(data_test_text3.size);
+			auto r_res = f_r_zstd.read(data_test_text3.size);
 
 			//assert(f_r_zstd.isGood());
 			//assert(f_r_file.isGood());
-			assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-			const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
+			assert(r_res.isOwning());
 
 			//std::cout << "decomp: " << std::string_view{reinterpret_cast<const char*>(r_res_vec.data()), r_res_vec.size()};
 
-			assert(r_res_vec.size() == data_test_text3.size);
+			assert(r_res.size == data_test_text3.size);
 			assert(std::equal(
 				data_test_text3.cbegin(),
 				data_test_text3.cend(),
-				r_res_vec.cbegin()
+				r_res.cbegin()
 			));
 		}
 
 		{ // assert eof somehow
 			// since its eof, reading a single byte should return a zero sized buffer
-			auto r_res_var = f_r_zstd.read(1);
-			if (std::holds_alternative<std::vector<uint8_t>>(r_res_var)) {
-				assert(std::get<std::vector<uint8_t>>(r_res_var).empty());
-			} else if (std::holds_alternative<ByteSpan>(r_res_var)) {
-				assert(std::get<ByteSpan>(r_res_var).empty());
-			} else {
-				assert(false);
-			}
+			auto r_res = f_r_zstd.read(1);
+			assert(r_res.empty());
 		}
 	}
 
@@ -285,27 +267,20 @@ int main(void) {
 				assert(f_r_file.isGood());
 
 				{ // read frame
-					auto r_res_var = f_r_zstd.read(frame_size);
+					auto r_res = f_r_zstd.read(frame_size);
 
-					assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-					const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
-					assert(r_res_vec.size() == frame_size);
+					assert(r_res.isOwning());
+					assert(r_res.size == frame_size);
 
 					// assert equal
-					for (auto& e : r_res_vec) {
+					for (auto& e : r_res) {
 						assert(e == uint8_t(rng_data() & 0xff));
 					}
 				}
 
 				{ // eof test
-					auto r_res_var = f_r_zstd.read(1);
-					if (std::holds_alternative<std::vector<uint8_t>>(r_res_var)) {
-						assert(std::get<std::vector<uint8_t>>(r_res_var).empty());
-					} else if (std::holds_alternative<ByteSpan>(r_res_var)) {
-						assert(std::get<ByteSpan>(r_res_var).empty());
-					} else {
-						assert(false);
-					}
+					auto r_res = f_r_zstd.read(1);
+					assert(r_res.empty());
 				}
 			}
 
@@ -363,27 +338,20 @@ int main(void) {
 			const size_t frame_size = (rng() % ((2<<19) - 1)) + 1;
 			//std::cerr << "f: " << i << " fs: " << frame_size << "\n";
 
-			auto r_res_var = f_r_zstd.read(frame_size);
+			auto r_res = f_r_zstd.read(frame_size);
 
-			assert(std::holds_alternative<std::vector<uint8_t>>(r_res_var));
-			const auto& r_res_vec = std::get<std::vector<uint8_t>>(r_res_var);
-			assert(r_res_vec.size() == frame_size);
+			assert(r_res.isOwning());
+			assert(r_res.size == frame_size);
 
 			// assert equal
-			for (auto& e : r_res_vec) {
+			for (auto& e : r_res) {
 				assert(e == uint8_t(rng_data() & 0xff));
 			}
 		}
 
 		{ // eof test
-			auto r_res_var = f_r_zstd.read(1);
-			if (std::holds_alternative<std::vector<uint8_t>>(r_res_var)) {
-				assert(std::get<std::vector<uint8_t>>(r_res_var).empty());
-			} else if (std::holds_alternative<ByteSpan>(r_res_var)) {
-				assert(std::get<ByteSpan>(r_res_var).empty());
-			} else {
-				assert(false);
-			}
+			auto r_res = f_r_zstd.read(1);
+			assert(r_res.empty());
 		}
 	}
 

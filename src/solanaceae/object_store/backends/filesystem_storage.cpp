@@ -26,19 +26,6 @@ static const char* metaFileTypeSuffix(MetaFileType mft) {
 	return ""; // .unk?
 }
 
-// TODO: move to ... somewhere. (span? file2i?)
-static ByteSpan spanFromRead(const std::variant<ByteSpan, std::vector<uint8_t>>& data_var) {
-	if (std::holds_alternative<std::vector<uint8_t>>(data_var)) {
-		auto& vec = std::get<std::vector<uint8_t>>(data_var);
-		return {vec.data(), vec.size()};
-	} else if (std::holds_alternative<ByteSpan>(data_var)) {
-		return std::get<ByteSpan>(data_var);
-	} else {
-		assert(false);
-		return {};
-	}
-}
-
 
 namespace backend {
 
@@ -347,8 +334,7 @@ bool FilesystemStorage::read(Object o, std::function<read_from_storage_put_data_
 	// TODO: make it read in a single chunk instead?
 	static constexpr int64_t chunk_size {1024 * 1024}; // 1MiB should be good for read
 	do {
-		auto data_var = data_file_stack.top()->read(chunk_size);
-		ByteSpan data = spanFromRead(data_var);
+		auto data = data_file_stack.top()->read(chunk_size);
 
 		if (data.empty()) {
 			// error or probably eof
@@ -567,11 +553,10 @@ size_t FilesystemStorage::scanPath(std::string_view path) {
 			}
 
 			// HACK: read fixed amout of data, but this way if we have neither enc nor comp we pass the span through
-			auto binary_read_value = binary_reader_stack.top()->read(10*1024*1024); // is 10MiB large enough for meta?
-			const auto binary_read_span = spanFromRead(binary_read_value);
-			assert(binary_read_span.size < 10*1024*1024);
+			auto binary_read = binary_reader_stack.top()->read(10*1024*1024); // is 10MiB large enough for meta?
+			assert(binary_read.size < 10*1024*1024);
 
-			j = nlohmann::json::from_msgpack(binary_read_span, true, false);
+			j = nlohmann::json::from_msgpack(binary_read, true, false);
 		} else if (it.meta_ext == ".meta.json") {
 			std::ifstream file(it.obj_path.generic_u8string() + it.meta_ext, std::ios::in | std::ios::binary);
 			if (!file.is_open()) {

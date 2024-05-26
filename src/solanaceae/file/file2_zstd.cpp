@@ -46,8 +46,8 @@ bool File2ZSTDW::write(const ByteSpan data, int64_t pos) {
 	return _real_file.write(ByteSpan{compressed_buffer.data(), ret}) && _real_file.isGood();
 }
 
-std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDW::read(uint64_t, int64_t) {
-	return {};
+ByteSpanWithOwnership File2ZSTDW::read(uint64_t, int64_t) {
+	return ByteSpan{};
 }
 
 // ######################################### decompression
@@ -70,10 +70,10 @@ bool File2ZSTDR::write(const ByteSpan, int64_t) {
 	return false;
 }
 
-std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDR::read(uint64_t size, int64_t pos) {
+ByteSpanWithOwnership File2ZSTDR::read(uint64_t size, int64_t pos) {
 	if (pos != -1) {
 		// error, only support streaming (for now)
-		return {};
+		return ByteSpan{};
 	}
 
 	std::vector<uint8_t> ret_data;
@@ -92,7 +92,7 @@ std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDR::read(uint64_t size, int
 		if (_z_input.src == nullptr || _z_input.pos == _z_input.size) {
 			const auto request_size = _in_buffer.size();
 			if (!feedInput(_real_file.read(request_size, -1))) {
-				return ret_data;
+				return ByteSpanWithOwnership{std::move(ret_data)};
 			}
 
 			// if _z_input.size < _in_buffer.size() -> assume eof?
@@ -108,7 +108,7 @@ std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDR::read(uint64_t size, int
 			if (ZSTD_isError(ret)) {
 				// error <.<
 				std::cerr << "---- error: decompression error\n";
-				return ret_data;
+				return ByteSpanWithOwnership{std::move(ret_data)};
 			}
 
 			// no new decomp data?
@@ -145,7 +145,7 @@ std::variant<ByteSpan, std::vector<uint8_t>> File2ZSTDR::read(uint64_t size, int
 		} while (_z_input.pos < _z_input.size);
 	}
 
-	return ret_data;
+	return ByteSpanWithOwnership{std::move(ret_data)};
 }
 
 bool File2ZSTDR::feedInput(std::variant<ByteSpan, std::vector<uint8_t>>&& read_buff) {
@@ -154,7 +154,7 @@ bool File2ZSTDR::feedInput(std::variant<ByteSpan, std::vector<uint8_t>>&& read_b
 		const auto& span = std::get<ByteSpan>(read_buff);
 		if (span.size > _in_buffer.size()) {
 			// error, how did we read more than we asked for??
-			return {};
+			return false;
 		}
 
 		if (span.empty()) {
@@ -172,7 +172,7 @@ bool File2ZSTDR::feedInput(std::variant<ByteSpan, std::vector<uint8_t>>&& read_b
 		auto& vec = std::get<std::vector<uint8_t>>(read_buff);
 		if (vec.size() > _in_buffer.size()) {
 			// error, how did we read more than we asked for??
-			return {};
+			return false;
 		}
 
 		// cpy

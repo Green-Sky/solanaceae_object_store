@@ -18,7 +18,7 @@ struct File2ZSTDW : public File2I {
 
 	// for simplicity and potential future seekability each write is its own frame
 	bool write(const ByteSpan data, int64_t pos = -1) override;
-	std::variant<ByteSpan, std::vector<uint8_t>> read(uint64_t size, int64_t pos = -1) override;
+	ByteSpanWithOwnership read(uint64_t size, int64_t pos = -1) override;
 };
 
 // zstd decompression wrapper over another file
@@ -40,7 +40,7 @@ struct File2ZSTDR : public File2I {
 	bool isGood(void) override;
 
 	bool write(const ByteSpan data, int64_t pos = -1) override;
-	std::variant<ByteSpan, std::vector<uint8_t>> read(uint64_t size, int64_t pos = -1) override;
+	ByteSpanWithOwnership read(uint64_t size, int64_t pos = -1) override;
 
 	private:
 		bool feedInput(std::variant<ByteSpan, std::vector<uint8_t>>&& read_buff);

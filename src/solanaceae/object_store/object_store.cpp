@@ -4,6 +4,8 @@
 
 #include "./serializer_json.hpp"
 
+#include <solanaceae/file/file2.hpp>
+
 #include <nlohmann/json.hpp> // this sucks
 
 #include <iostream>
@@ -68,6 +70,10 @@ bool StorageBackendI::write(Object o, const ByteSpan data) {
 		return i;
 	};
 	return write(o, fn_cb);
+}
+
+std::unique_ptr<File2I> StorageBackendI::file2(Object o, FILE2_FLAGS flags) {
+	return nullptr;
 }
 
 ObjectStore2::ObjectStore2(void) {

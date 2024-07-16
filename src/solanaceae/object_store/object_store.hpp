@@ -15,6 +15,7 @@ using ObjectHandle = entt::basic_handle<ObjectRegistry>;
 
 // fwd
 struct ObjectStore2;
+struct File2I;
 
 struct StorageBackendI {
 	// OR or OS ?
@@ -35,6 +36,15 @@ struct StorageBackendI {
 	using read_from_storage_put_data_cb = void(const ByteSpan buffer);
 	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) = 0;
 
+	// ========== File2 interop ==========
+	enum FILE2_FLAGS : uint32_t {
+		FILE2_READ = 1u << 0,
+		FILE2_WRITE = 1u << 1,
+	};
+	// TODO: stronger requirements
+	// the backend might decide to not support writing using file2, if it's eg. zstd compressed
+	// backends might only support a single file2 instance per object!
+	std::unique_ptr<File2I> file2(Object o, FILE2_FLAGS flags); // default does nothing
 };
 
 namespace ObjectStore::Events {
@@ -71,7 +81,7 @@ struct ObjectStoreEventI {
 using ObjectStoreEventProviderI = EventProviderI<ObjectStoreEventI>;
 
 struct ObjectStore2 : public ObjectStoreEventProviderI {
-	static constexpr const char* version {"2"};
+	static constexpr const char* version {"3"};
 
 	ObjectRegistry _reg;
 

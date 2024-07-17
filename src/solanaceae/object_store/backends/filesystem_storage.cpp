@@ -27,7 +27,7 @@ static const char* metaFileTypeSuffix(MetaFileType mft) {
 }
 
 
-namespace backend {
+namespace Backends {
 
 FilesystemStorage::FilesystemStorage(
 	ObjectStore2& os,
@@ -617,5 +617,5 @@ void FilesystemStorage::scanPathAsync(std::string path) {
 	scanPath(path); // TODO: make async and post result
 }
 
-} // backend
+} // Backends
 

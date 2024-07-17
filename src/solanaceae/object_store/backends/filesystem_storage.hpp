@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace backend {
+namespace Backends {
 
 struct FilesystemStorage : public StorageBackendI {
 	FilesystemStorage(
@@ -37,5 +37,5 @@ struct FilesystemStorage : public StorageBackendI {
 		void scanPathAsync(std::string path);
 };
 
-} // backend
+} // Backends
 

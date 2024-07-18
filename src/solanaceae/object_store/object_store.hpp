@@ -29,12 +29,12 @@ struct StorageBackendI {
 	// ========== write object to storage ==========
 	using write_to_storage_fetch_data_cb = uint64_t(uint8_t* request_buffer, uint64_t buffer_size);
 	// calls data_cb with a buffer to be filled in, cb returns actual count of data. if returned < max, its the last buffer.
-	virtual bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb) = 0;
+	virtual bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb);
 	bool write(Object o, const ByteSpan data);
 
 	// ========== read object from storage ==========
 	using read_from_storage_put_data_cb = void(const ByteSpan buffer);
-	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) = 0;
+	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb);
 
 	// ========== File2 interop ==========
 	enum FILE2_FLAGS : uint32_t {

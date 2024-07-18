@@ -59,6 +59,10 @@ ObjectHandle StorageBackendI::newObject(ByteSpan) {
 	return {};
 }
 
+bool StorageBackendI::write(Object, std::function<write_to_storage_fetch_data_cb>&) {
+	return false;
+}
+
 bool StorageBackendI::write(Object o, const ByteSpan data) {
 	std::function<write_to_storage_fetch_data_cb> fn_cb = [read = 0ull, data](uint8_t* request_buffer, uint64_t buffer_size) mutable -> uint64_t {
 		uint64_t i = 0;
@@ -70,6 +74,10 @@ bool StorageBackendI::write(Object o, const ByteSpan data) {
 		return i;
 	};
 	return write(o, fn_cb);
+}
+
+bool StorageBackendI::read(Object, std::function<read_from_storage_put_data_cb>&) {
+	return false;
 }
 
 std::unique_ptr<File2I> StorageBackendI::file2(Object o, FILE2_FLAGS flags) {

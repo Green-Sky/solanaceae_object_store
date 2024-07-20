@@ -26,13 +26,13 @@ struct StorageBackendI {
 	// default impl fails, acting like a read only store
 	virtual ObjectHandle newObject(ByteSpan id);
 
-	// ========== write object to storage ==========
+	// ========== write object to storage (atomic-ish) ==========
 	using write_to_storage_fetch_data_cb = uint64_t(uint8_t* request_buffer, uint64_t buffer_size);
 	// calls data_cb with a buffer to be filled in, cb returns actual count of data. if returned < max, its the last buffer.
 	virtual bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb);
 	bool write(Object o, const ByteSpan data);
 
-	// ========== read object from storage ==========
+	// ========== read object from storage (atomic-ish) ==========
 	using read_from_storage_put_data_cb = void(const ByteSpan buffer);
 	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb);
 
@@ -40,6 +40,12 @@ struct StorageBackendI {
 	enum FILE2_FLAGS : uint32_t {
 		FILE2_READ = 1u << 0,
 		FILE2_WRITE = 1u << 1,
+
+		// only relevant for backend implementing this (ideally all)
+		FILE2_NO_COMP = 1u << 2,// dont do any de-/compression
+		FILE2_NO_ENC = 1u << 3, // dont do any de-/encryption
+
+		FILE2_RAW = FILE2_NO_COMP | FILE2_NO_ENC, // combined
 	};
 	// TODO: stronger requirements
 	// the backend might decide to not support writing using file2, if it's eg. zstd compressed

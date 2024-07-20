@@ -3,19 +3,10 @@
 #include <solanaceae/util/event_provider.hpp>
 #include <solanaceae/util/span.hpp>
 
+#include "./fwd.hpp"
+
 #include <entt/entity/registry.hpp>
 #include <entt/entity/handle.hpp>
-
-#include <cstdint>
-
-// internal id
-enum class Object : uint32_t {};
-using ObjectRegistry = entt::basic_registry<Object>;
-using ObjectHandle = entt::basic_handle<ObjectRegistry>;
-
-// fwd
-struct ObjectStore2;
-struct File2I;
 
 struct StorageBackendI {
 	// OR or OS ?

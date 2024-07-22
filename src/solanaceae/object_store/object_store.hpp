@@ -100,3 +100,12 @@ struct ObjectStore2 : public ObjectStoreEventProviderI {
 	void throwEventDestroy(const Object o);
 };
 
+template<>
+struct std::hash<ObjectHandle> {
+	std::size_t operator()(ObjectHandle const& o) const noexcept {
+		const std::size_t h1 = reinterpret_cast<std::size_t>(o.registry());
+		const std::size_t h2 = entt::to_integral(o.entity());
+		return (h1 << 3) ^ (h2 * 11400714819323198485llu);
+	}
+};
+

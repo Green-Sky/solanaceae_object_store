@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./types.hpp"
-#include "./object_store.hpp"
+#include "./fwd.hpp"
 
 #include <vector>
 #include <string>

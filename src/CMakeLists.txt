@@ -6,6 +6,8 @@ add_library(solanaceae_object_store
 	./solanaceae/object_store/types.hpp
 	./solanaceae/object_store/meta_components.hpp
 	./solanaceae/object_store/meta_components_id.inl
+	./solanaceae/object_store/meta_components_file.hpp
+	./solanaceae/object_store/meta_components_file_id.inl
 	./solanaceae/object_store/serializer_json.hpp
 	./solanaceae/object_store/object_store.hpp
 	./solanaceae/object_store/object_store.cpp

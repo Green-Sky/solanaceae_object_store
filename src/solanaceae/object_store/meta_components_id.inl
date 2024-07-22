@@ -18,13 +18,20 @@ constexpr std::string_view entt::type_name<x>::value() noexcept { \
 
 // cross compiler stable ids
 
+DEFINE_COMP_ID(ObjComp::ID)
 DEFINE_COMP_ID(ObjComp::DataEncryptionType)
 DEFINE_COMP_ID(ObjComp::DataCompressionType)
+
+DEFINE_COMP_ID(ObjComp::Ephemeral::MetaFileType)
+DEFINE_COMP_ID(ObjComp::Ephemeral::MetaEncryptionType)
+DEFINE_COMP_ID(ObjComp::Ephemeral::MetaCompressionType)
+DEFINE_COMP_ID(ObjComp::Ephemeral::Backend)
+DEFINE_COMP_ID(ObjComp::Ephemeral::FilePath)
+DEFINE_COMP_ID(ObjComp::Ephemeral::DirtyTag) // ??
 
 // old stuff
 DEFINE_COMP_ID(FragComp::DataEncryptionType)
 DEFINE_COMP_ID(FragComp::DataCompressionType)
 
 #undef DEFINE_COMP_ID
-
 

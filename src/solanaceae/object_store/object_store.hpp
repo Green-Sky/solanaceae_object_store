@@ -41,7 +41,7 @@ struct StorageBackendI {
 	// TODO: stronger requirements
 	// the backend might decide to not support writing using file2, if it's eg. zstd compressed
 	// backends might only support a single file2 instance per object!
-	std::unique_ptr<File2I> file2(Object o, FILE2_FLAGS flags); // default does nothing
+	virtual std::unique_ptr<File2I> file2(Object o, FILE2_FLAGS flags); // default does nothing
 };
 
 namespace ObjectStore::Events {

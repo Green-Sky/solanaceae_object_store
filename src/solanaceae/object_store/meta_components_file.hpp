@@ -136,6 +136,16 @@ namespace ObjectStore::Components {
 			};
 #endif
 
+			// split into up and down?
+			struct TagTransferPaused {};
+
+			// TODO: big todo, this needs to become some kind of event
+			// TODO: rename to start? or set or ...
+			struct ActionTransferAccept {
+				std::string save_to_path;
+				bool path_is_file = false; // if the path is not the folder to place the file into, overwrites the name
+			};
+
 		} // File
 
 	} // Ephemeral

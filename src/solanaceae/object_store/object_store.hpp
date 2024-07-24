@@ -29,6 +29,8 @@ struct StorageBackendI {
 
 	// ========== File2 interop ==========
 	enum FILE2_FLAGS : uint32_t {
+		FILE2_NONE = 0u,
+
 		FILE2_READ = 1u << 0,
 		FILE2_WRITE = 1u << 1,
 

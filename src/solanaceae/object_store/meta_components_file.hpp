@@ -72,10 +72,12 @@ namespace ObjectStore::Components {
 		};
 
 		// img stuff
-		// save in the message instead? no?
-		// struct FrameDims {
+		struct FrameDims {
+			uint16_t w {0u};
+			uint16_t h {0u};
+		};
 		// struct ThumbHash {
-		// struct TagNotImage {};
+		// struct TagNotImage {}; ???
 
 
 		// receiving/sending/paused/canceled/stopped whatever

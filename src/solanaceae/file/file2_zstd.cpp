@@ -164,7 +164,7 @@ bool File2ZSTDR::feedInput(std::variant<ByteSpan, std::vector<uint8_t>>&& read_b
 			_in_buffer = static_cast<std::vector<uint8_t>>(span);
 			_z_input = {
 				_in_buffer.data(),
-				span.size,
+				size_t(span.size), // potential down cast
 				0
 			};
 		}

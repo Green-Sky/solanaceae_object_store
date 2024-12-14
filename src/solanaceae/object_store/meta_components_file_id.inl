@@ -20,7 +20,7 @@ constexpr std::string_view entt::type_name<x>::value() noexcept { \
 
 DEFINE_COMP_ID(ObjComp::F::TagLocalHaveAll)
 DEFINE_COMP_ID(ObjComp::F::LocalHaveBitset)
-//DEFINE_COMP_ID(ObjComp::F::RemoteHaveBitset)
+DEFINE_COMP_ID(ObjComp::F::RemoteHaveBitset)
 DEFINE_COMP_ID(ObjComp::F::SingleInfo)
 DEFINE_COMP_ID(ObjComp::F::SingleInfoLocal)
 DEFINE_COMP_ID(ObjComp::F::Collection)

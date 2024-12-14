@@ -4,8 +4,13 @@
 
 #include <solanaceae/util/bitset.hpp>
 
+#include <entt/container/dense_map.hpp>
+
 #include <vector>
 #include <string>
+
+// fwd enum (obj cant depend on Contact3
+enum class Contact3 : uint32_t;
 
 namespace ObjectStore::Components {
 
@@ -26,7 +31,6 @@ namespace ObjectStore::Components {
 			// size_t bits {0};
 		};
 
-#if 0
 		// ephemeral?, not sure saving this to disk makes sense
 		// tag remove have all?
 		struct RemoteHaveBitset {
@@ -36,7 +40,6 @@ namespace ObjectStore::Components {
 			};
 			entt::dense_map<Contact3, Entry> others;
 		};
-#endif
 
 
 		// for single files or member of a collection

@@ -33,13 +33,13 @@ FilesystemStorage::FilesystemStorage(
 	ObjectStore2& os,
 	std::string_view storage_path,
 	MetaFileType mft_new
-) : StorageBackendI::StorageBackendI(os), _storage_path(storage_path), _mft_new(mft_new) {
+) : _os(os), _storage_path(storage_path), _mft_new(mft_new) {
 }
 
 FilesystemStorage::~FilesystemStorage(void) {
 }
 
-ObjectHandle FilesystemStorage::newObject(ByteSpan id) {
+ObjectHandle FilesystemStorage::newObject(ByteSpan id, bool throw_construct) {
 	{ // first check if id is already used (TODO: solve the multi obj/backend problem)
 		auto exising_oh = _os.getOneObjectByID(id);
 		if (static_cast<bool>(exising_oh)) {
@@ -74,7 +74,8 @@ ObjectHandle FilesystemStorage::newObject(ByteSpan id) {
 
 	ObjectHandle oh{_os.registry(), _os.registry().create()};
 
-	oh.emplace<ObjComp::Ephemeral::Backend>(this);
+	oh.emplace<ObjComp::Ephemeral::BackendMeta>(this);
+	oh.emplace<ObjComp::Ephemeral::BackendAtomic>(this);
 	oh.emplace<ObjComp::ID>(std::vector<uint8_t>{id});
 	oh.emplace<ObjComp::Ephemeral::FilePath>(object_file_path.generic_u8string());
 	oh.emplace<ObjComp::Ephemeral::MetaFileType>(_mft_new);
@@ -87,8 +88,10 @@ ObjectHandle FilesystemStorage::newObject(ByteSpan id) {
 		return {};
 	}
 
-	// while new metadata might be created here, making sure the file could be created is more important
-	_os.throwEventConstruct(oh);
+	if (throw_construct) {
+		// while new metadata might be created here, making sure the file could be created is more important
+		_os.throwEventConstruct(oh);
+	}
 
 	return oh;
 }
@@ -579,7 +582,8 @@ size_t FilesystemStorage::scanPath(std::string_view path) {
 		// TODO: existing fragment file
 		//newFragmentFile();
 		ObjectHandle oh{_os.registry(), _os.registry().create()};
-		oh.emplace<ObjComp::Ephemeral::Backend>(this);
+		oh.emplace<ObjComp::Ephemeral::BackendMeta>(this);
+		oh.emplace<ObjComp::Ephemeral::BackendAtomic>(this);
 		oh.emplace<ObjComp::ID>(hex2bin(it.id_str));
 		oh.emplace<ObjComp::Ephemeral::MetaFileType>(mft);
 		oh.emplace<ObjComp::Ephemeral::MetaEncryptionType>(meta_enc);

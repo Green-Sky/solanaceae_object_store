@@ -8,7 +8,9 @@ using ObjectRegistry = entt::basic_registry<Object>;
 using ObjectHandle = entt::basic_handle<ObjectRegistry>;
 
 // fwd
-struct StorageBackendI;
+struct StorageBackendIMeta;
+struct StorageBackendIAtomic;
+struct StorageBackendIFile2;
 struct ObjectStore2;
 struct File2I;
 

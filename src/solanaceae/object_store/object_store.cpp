@@ -51,19 +51,7 @@ static bool deserl_json_data_comp_type(ObjectHandle oh, const nlohmann::json& in
 	return true;
 }
 
-StorageBackendI::StorageBackendI(ObjectStore2& os) : _os(os) {
-}
-
-ObjectHandle StorageBackendI::newObject(ByteSpan) {
-	//return {_os.registry(), entt::null};
-	return {};
-}
-
-bool StorageBackendI::write(Object, std::function<write_to_storage_fetch_data_cb>&) {
-	return false;
-}
-
-bool StorageBackendI::write(Object o, const ByteSpan data) {
+bool StorageBackendIAtomic::write(Object o, const ByteSpan data) {
 	std::function<write_to_storage_fetch_data_cb> fn_cb = [read = 0ull, data](uint8_t* request_buffer, uint64_t buffer_size) mutable -> uint64_t {
 		uint64_t i = 0;
 		for (; i+read < data.size && i < buffer_size; i++) {
@@ -74,14 +62,6 @@ bool StorageBackendI::write(Object o, const ByteSpan data) {
 		return i;
 	};
 	return write(o, fn_cb);
-}
-
-bool StorageBackendI::read(Object, std::function<read_from_storage_put_data_cb>&) {
-	return false;
-}
-
-std::unique_ptr<File2I> StorageBackendI::file2(Object o, FILE2_FLAGS flags) {
-	return nullptr;
 }
 
 ObjectStore2::ObjectStore2(void) {

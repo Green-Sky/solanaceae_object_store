@@ -39,9 +39,14 @@ namespace ObjectStore::Components {
 			Compression comp {Compression::NONE};
 		};
 
-		struct Backend {
-			// TODO: shared_ptr instead??
-			StorageBackendI* ptr;
+		struct BackendMeta {
+			StorageBackendIMeta* ptr;
+		};
+		struct BackendAtomic {
+			StorageBackendIAtomic* ptr;
+		};
+		struct BackendFile2 {
+			StorageBackendIFile2* ptr;
 		};
 
 		// excluded from file meta

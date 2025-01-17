@@ -8,24 +8,39 @@
 #include <entt/entity/registry.hpp>
 #include <entt/entity/handle.hpp>
 
-struct StorageBackendI {
-	// OR or OS ?
-	ObjectStore2& _os;
+// the different backend components
+// depending on what a backend (or composed backends) provide
+// different component (pointers) might be provided
 
-	StorageBackendI(ObjectStore2& os);
+// provides metadata storage(?)
+struct StorageBackendIMeta {
+	virtual ~StorageBackendIMeta(void) = default;
+	virtual ObjectHandle newObject(ByteSpan id, bool throw_construct = true) = 0;
+};
 
-	// default impl fails, acting like a read only store
-	virtual ObjectHandle newObject(ByteSpan id);
+// provides atomic-ish read write
+// simplest backend strategy to implement data encryption for
+//
+// collides with file backend and implementers providing both need to
+// orchestrate access.
+struct StorageBackendIAtomic {
+	using write_to_storage_fetch_data_cb = uint64_t(uint8_t* request_buffer, uint64_t buffer_size);
+	using read_from_storage_put_data_cb = void(const ByteSpan buffer);
+
+	virtual ~StorageBackendIAtomic(void) = default;
+
+	// calls data_cb with a buffer to be filled in, cb returns actual count of data. if returned < max, its the last buffer.
 
 	// ========== write object to storage (atomic-ish) ==========
-	using write_to_storage_fetch_data_cb = uint64_t(uint8_t* request_buffer, uint64_t buffer_size);
-	// calls data_cb with a buffer to be filled in, cb returns actual count of data. if returned < max, its the last buffer.
-	virtual bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb);
-	bool write(Object o, const ByteSpan data);
+	virtual bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb) = 0;
+	bool write(Object o, const ByteSpan data); // helper, calls cb variant internally
 
 	// ========== read object from storage (atomic-ish) ==========
-	using read_from_storage_put_data_cb = void(const ByteSpan buffer);
-	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb);
+	virtual bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) = 0;
+};
+
+struct StorageBackendIFile2 {
+	virtual ~StorageBackendIFile2(void) = default;
 
 	// ========== File2 interop ==========
 	enum FILE2_FLAGS : uint32_t {
@@ -43,7 +58,7 @@ struct StorageBackendI {
 	// TODO: stronger requirements
 	// the backend might decide to not support writing using file2, if it's eg. zstd compressed
 	// backends might only support a single file2 instance per object!
-	virtual std::unique_ptr<File2I> file2(Object o, FILE2_FLAGS flags); // default does nothing
+	virtual std::unique_ptr<File2I> file2(Object o, FILE2_FLAGS flags) = 0;
 };
 
 namespace ObjectStore::Events {
@@ -80,7 +95,7 @@ struct ObjectStoreEventI {
 using ObjectStoreEventProviderI = EventProviderI<ObjectStoreEventI>;
 
 struct ObjectStore2 : public ObjectStoreEventProviderI {
-	static constexpr const char* version {"3"};
+	static constexpr const char* version {"4"};
 
 	ObjectRegistry _reg;
 

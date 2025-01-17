@@ -25,7 +25,9 @@ DEFINE_COMP_ID(ObjComp::DataCompressionType)
 DEFINE_COMP_ID(ObjComp::Ephemeral::MetaFileType)
 DEFINE_COMP_ID(ObjComp::Ephemeral::MetaEncryptionType)
 DEFINE_COMP_ID(ObjComp::Ephemeral::MetaCompressionType)
-DEFINE_COMP_ID(ObjComp::Ephemeral::Backend)
+DEFINE_COMP_ID(ObjComp::Ephemeral::BackendMeta)
+DEFINE_COMP_ID(ObjComp::Ephemeral::BackendAtomic)
+DEFINE_COMP_ID(ObjComp::Ephemeral::BackendFile2)
 DEFINE_COMP_ID(ObjComp::Ephemeral::FilePath)
 DEFINE_COMP_ID(ObjComp::Ephemeral::DirtyTag) // ??
 

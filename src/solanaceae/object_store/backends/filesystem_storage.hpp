@@ -7,7 +7,11 @@
 
 namespace Backends {
 
-struct FilesystemStorage : public StorageBackendI {
+// TODO: rename to atomic filesystem store?
+// provides meta and atomic read/write on your filesystem
+struct FilesystemStorage : public StorageBackendIMeta, public StorageBackendIAtomic {
+	ObjectStore2& _os;
+
 	FilesystemStorage(
 		ObjectStore2& os,
 		std::string_view storage_path = "test_obj_store",
@@ -22,13 +26,10 @@ struct FilesystemStorage : public StorageBackendI {
 	// meta file type for new objects
 	MetaFileType _mft_new {MetaFileType::BINARY_MSGPACK};
 
-	ObjectHandle newObject(ByteSpan id) override;
+	ObjectHandle newObject(ByteSpan id, bool throw_construct = true) override;
 
 	bool write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb) override;
 	bool read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) override;
-
-	//// convenience function
-	//nlohmann::json loadFromStorageNJ(FragmentID fid);
 
 	void scanAsync(void);
 

@@ -10,7 +10,7 @@
 #include <string>
 
 // fwd enum (obj cant depend on Contact3
-enum class Contact3 : uint32_t;
+enum class Contact4 : uint32_t;
 
 namespace ObjectStore::Components {
 
@@ -38,7 +38,7 @@ namespace ObjectStore::Components {
 				bool have_all {false};
 				BitSet have;
 			};
-			entt::dense_map<Contact3, Entry> others;
+			entt::dense_map<Contact4, Entry> others;
 		};
 
 

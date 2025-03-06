@@ -126,7 +126,7 @@ void ObjectStore2::throwEventDestroy(const Object o) {
 	std::cout << "OS debug: event destroy " << entt::to_integral(o) << "\n";
 	dispatch(
 		ObjectStore_Event::object_destroy,
-		ObjectStore::Events::ObjectUpdate{
+		ObjectStore::Events::ObjectDestory{
 			ObjectHandle{_reg, o}
 		}
 	);

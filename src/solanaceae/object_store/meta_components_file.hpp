@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 
-// fwd enum (obj cant depend on Contact3
+// fwd enum (obj cant depend on Contact4
 enum class Contact4 : uint32_t;
 
 namespace ObjectStore::Components {
@@ -137,7 +137,7 @@ namespace ObjectStore::Components {
 
 #if 0
 			struct TransferStatsSeparated {
-				entt::dense_map<Contact3, TransferStats> stats;
+				entt::dense_map<Contact4, TransferStats> stats;
 			};
 #endif
 

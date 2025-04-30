@@ -1,4 +1,4 @@
-#include "./filesystem_storage.hpp"
+#include "./filesystem_storage_atomic.hpp"
 
 #include <solanaceae/object_store/meta_components.hpp>
 #include <solanaceae/object_store/serializer_json.hpp>
@@ -29,17 +29,17 @@ static const char* metaFileTypeSuffix(MetaFileType mft) {
 
 namespace Backends {
 
-FilesystemStorage::FilesystemStorage(
+FilesystemStorageAtomic::FilesystemStorageAtomic(
 	ObjectStore2& os,
 	std::string_view storage_path,
 	MetaFileType mft_new
 ) : _os(os), _storage_path(storage_path), _mft_new(mft_new) {
 }
 
-FilesystemStorage::~FilesystemStorage(void) {
+FilesystemStorageAtomic::~FilesystemStorageAtomic(void) {
 }
 
-ObjectHandle FilesystemStorage::newObject(ByteSpan id, bool throw_construct) {
+ObjectHandle FilesystemStorageAtomic::newObject(ByteSpan id, bool throw_construct) {
 	{ // first check if id is already used (TODO: solve the multi obj/backend problem)
 		auto exising_oh = _os.getOneObjectByID(id);
 		if (static_cast<bool>(exising_oh)) {
@@ -96,7 +96,7 @@ ObjectHandle FilesystemStorage::newObject(ByteSpan id, bool throw_construct) {
 	return oh;
 }
 
-bool FilesystemStorage::write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb) {
+bool FilesystemStorageAtomic::write(Object o, std::function<write_to_storage_fetch_data_cb>& data_cb) {
 	auto& reg = _os.registry();
 
 	if (!reg.valid(o)) {
@@ -303,7 +303,7 @@ bool FilesystemStorage::write(Object o, std::function<write_to_storage_fetch_dat
 	return true;
 }
 
-bool FilesystemStorage::read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) {
+bool FilesystemStorageAtomic::read(Object o, std::function<read_from_storage_put_data_cb>& data_cb) {
 	auto& reg = _os.registry();
 
 	if (!reg.valid(o)) {
@@ -355,11 +355,11 @@ bool FilesystemStorage::read(Object o, std::function<read_from_storage_put_data_
 	return true;
 }
 
-void FilesystemStorage::scanAsync(void) {
+void FilesystemStorageAtomic::scanAsync(void) {
 	scanPathAsync(_storage_path);
 }
 
-size_t FilesystemStorage::scanPath(std::string_view path) {
+size_t FilesystemStorageAtomic::scanPath(std::string_view path) {
 	// TODO: extract so async can work (or/and make iteratable generator)
 
 	if (path.empty() || !std::filesystem::is_directory(path)) {
@@ -615,7 +615,7 @@ size_t FilesystemStorage::scanPath(std::string_view path) {
 	return scanned_objs.size();
 }
 
-void FilesystemStorage::scanPathAsync(std::string path) {
+void FilesystemStorageAtomic::scanPathAsync(std::string path) {
 	// add path to queue
 	// HACK: if path is known/any fragment is in the path, this operation blocks (non async)
 	scanPath(path); // TODO: make async and post result

@@ -9,15 +9,15 @@ namespace Backends {
 
 // TODO: rename to atomic filesystem store?
 // provides meta and atomic read/write on your filesystem
-struct FilesystemStorage : public StorageBackendIMeta, public StorageBackendIAtomic {
+struct FilesystemStorageAtomic : public StorageBackendIMeta, public StorageBackendIAtomic {
 	ObjectStore2& _os;
 
-	FilesystemStorage(
+	FilesystemStorageAtomic(
 		ObjectStore2& os,
 		std::string_view storage_path = "test_obj_store",
 		MetaFileType mft_new = MetaFileType::BINARY_MSGPACK
 	);
-	~FilesystemStorage(void);
+	~FilesystemStorageAtomic(void);
 
 	// TODO: fix the path for this specific fs?
 	// for now we assume a single storage path per backend (there can be multiple per type)

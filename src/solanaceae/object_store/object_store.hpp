@@ -49,7 +49,7 @@ struct StorageBackendIFile2 {
 		FILE2_READ = 1u << 0,
 		FILE2_WRITE = 1u << 1,
 
-		// only relevant for backend implementing this (ideally all)
+		// only relevant for backends implementing this (ideally all)
 		FILE2_NO_COMP = 1u << 2,// dont do any de-/compression
 		FILE2_NO_ENC = 1u << 3, // dont do any de-/encryption
 

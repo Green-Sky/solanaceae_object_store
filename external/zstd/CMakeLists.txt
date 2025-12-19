@@ -16,7 +16,9 @@ if (NOT TARGET zstd::libzstd)
 	set(ZSTD_BUILD_CONTRIB OFF)
 	set(ZSTD_BUILD_TESTS OFF)
 	FetchContent_Declare(zstd
-		URL "https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"
+		#URL "https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"
+		URL "https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz"
+		URL_HASH SHA256=eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3
 		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 		SOURCE_SUBDIR build/cmake
 		EXCLUDE_FROM_ALL

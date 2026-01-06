@@ -3,11 +3,13 @@ cmake_minimum_required(VERSION 3.18...3.24 FATAL_ERROR)
 include(FetchContent)
 
 if (NOT TARGET zstd::libzstd)
-	find_package(zstd CONFIG GLOBAL QUIET)
+	# we require GLOBAL to work here for zstd
+	if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+		find_package(zstd CONFIG GLOBAL QUIET)
+	endif()
 endif()
 
 if (NOT TARGET zstd::libzstd)
-	# TODO: try find_package() first
 	# TODO: try pkg-config next (will work on most distros)
 
 	set(ZSTD_BUILD_STATIC ON)
@@ -19,9 +21,9 @@ if (NOT TARGET zstd::libzstd)
 		#URL "https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"
 		URL "https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz"
 		URL_HASH SHA256=eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 		SOURCE_SUBDIR build/cmake
 		EXCLUDE_FROM_ALL
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 	)
 	FetchContent_MakeAvailable(zstd)
 

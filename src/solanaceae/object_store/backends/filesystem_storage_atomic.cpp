@@ -460,10 +460,7 @@ size_t FilesystemStorageAtomic::scanPath(std::string_view path) {
 		}
 	}
 
-	std::cout << "FS: scan found:\n";
-	for (const auto& it : file_obj_list) {
-		std::cout << "  " << it.id_str << "\n";
-	}
+	std::cout << "FS: scan found " << file_obj_list.size() << " entries\n";
 
 	// step 2: check if files preexist in reg
 	// main thread

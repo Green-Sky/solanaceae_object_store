@@ -8,7 +8,7 @@
 
 #include <nlohmann/json.hpp> // this sucks
 
-#include <iostream>
+//#include <iostream>
 
 // TODO: move somewhere else
 static bool serl_json_data_enc_type(const ObjectHandle oh, nlohmann::json& out) {
@@ -103,7 +103,7 @@ ObjectHandle ObjectStore2::getOneObjectByID(const ByteSpan id) {
 }
 
 void ObjectStore2::throwEventConstruct(const Object o) {
-	std::cout << "OS debug: event construct " << entt::to_integral(o) << "\n";
+	//std::cout << "OS debug: event construct " << entt::to_integral(o) << "\n";
 	dispatch(
 		ObjectStore_Event::object_construct,
 		ObjectStore::Events::ObjectConstruct{
@@ -113,7 +113,7 @@ void ObjectStore2::throwEventConstruct(const Object o) {
 }
 
 void ObjectStore2::throwEventUpdate(const Object o) {
-	std::cout << "OS debug: event update " << entt::to_integral(o) << "\n";
+	//std::cout << "OS debug: event update " << entt::to_integral(o) << "\n";
 	dispatch(
 		ObjectStore_Event::object_update,
 		ObjectStore::Events::ObjectUpdate{
@@ -123,7 +123,7 @@ void ObjectStore2::throwEventUpdate(const Object o) {
 }
 
 void ObjectStore2::throwEventDestroy(const Object o) {
-	std::cout << "OS debug: event destroy " << entt::to_integral(o) << "\n";
+	//std::cout << "OS debug: event destroy " << entt::to_integral(o) << "\n";
 	dispatch(
 		ObjectStore_Event::object_destroy,
 		ObjectStore::Events::ObjectDestory{

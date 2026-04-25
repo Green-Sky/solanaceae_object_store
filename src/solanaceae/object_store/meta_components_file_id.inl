@@ -31,6 +31,7 @@ DEFINE_COMP_ID(ObjComp::Ephemeral::File::DownloadPriority)
 DEFINE_COMP_ID(ObjComp::Ephemeral::File::ReadHeadHint)
 DEFINE_COMP_ID(ObjComp::Ephemeral::File::TransferStats)
 //DEFINE_COMP_ID(ObjComp::Ephemeral::File::TransferStatsSeparated)
+DEFINE_COMP_ID(ObjComp::Ephemeral::File::ActionTransferAccept)
 
 #undef DEFINE_COMP_ID
 

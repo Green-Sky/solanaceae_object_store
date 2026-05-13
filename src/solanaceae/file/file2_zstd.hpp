@@ -3,6 +3,7 @@
 #include <solanaceae/file/file2.hpp>
 
 #include <memory>
+#include <variant>
 
 #include <zstd.h>
 
